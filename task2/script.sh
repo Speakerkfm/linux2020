@@ -52,6 +52,12 @@ analyse() {
     awk -v dt=$LAST_DATE_SEC '{ cmd="date -j -f \"[%d/%b/%Y:%T\" "$1" \"+%s\""; cmd | getline var; $1=var ; if (var > dt) { print } else { exit 0 } ; close(cmd); } ' |
     wc -l)
 
+  if [ $NEW_RECORDS_COUNT -eq 0 ]; then
+    echo "No new records in $FILE_NAME since $LAST_DATE"
+    echo $CURRENT_DATE >> $DATE_FILE
+    exit 0
+  fi
+
   echo -e "\nТоп-15 IP-адресов, с которых посещался сайт\n"
   cat $1 |
     head -n $NEW_RECORDS_COUNT |
