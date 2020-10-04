@@ -60,8 +60,10 @@ analyse() {
   fi
 
 # Считаем количество новых записей в логе
+echo "Staring counting new records. Please wait..."
   NEW_RECORDS_COUNT=$(cat $1 |
     cut -d ' ' -f 4 |
+    tail -r |
     awk -v dt=$LAST_DATE_SEC '{ cmd="date -j -f \"[%d/%b/%Y:%T\" "$1" \"+%s\""; cmd | getline var; $1=var ; if (var > dt) { print } else { exit 0 } ; close(cmd); } ' |
     wc -l)
 
@@ -72,8 +74,11 @@ analyse() {
     exit 0
   fi
 
+echo "New records count in log: $NEW_RECORDS_COUNT"
+
   echo -e "\nТоп-15 IP-адресов, с которых посещался сайт\n"
   cat $1 |
+    tail -r |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 1 |
     sort |
@@ -84,6 +89,7 @@ analyse() {
 
   echo -e "\nТоп-15 ресурсов сайта, которые запрашивались клиентами\n"
   cat $1 |
+    tail -r |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 7 |
     sort |
@@ -94,6 +100,7 @@ analyse() {
 
   echo -e "\nСписок всех кодов возврата\n"
   cat $1 |
+    tail -r |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 9 |
     sort |
@@ -105,6 +112,7 @@ analyse() {
 
   echo -e "\nСписок кодов возврата 4xx и 5xx (только ошибки)\n"
   cat $1 |
+    tail -r |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 9 |
     sort |
