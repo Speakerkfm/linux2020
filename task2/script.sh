@@ -18,9 +18,9 @@
 ## Автоматически завершается, если в теле скрипта будет обнаружена ошибка при его выполнении;
 ##
 ## Коды ошибок:
-## exit code 10 файл не указан
-## exit code 20 файл не существует
-## exit code 30 скрипт уже запущен
+## exit code 10 - файл не указан
+## exit code 20 - файл не существует
+## exit code 30 - скрипт уже запущен
 
 ## Проверяем, что скрипт не запущен дважды
 if [ $(ps ax | grep $0 | wc -l) -gt 3 ]; then
@@ -49,32 +49,32 @@ analyse() {
   CURRENT_DATE_SEC=$(date +"%s")
   LAST_DATE_SEC=0
 
-# Выводим текущую дату
+  # Выводим текущую дату
   echo "Current date: $CURRENT_DATE"
 
-# Проверяем, запускался ли скрипт до этого момента. Если да, то получаем дату последнего запуска
+  # Проверяем, запускался ли скрипт до этого момента. Если да, то получаем дату последнего запуска
   if [ -f $DATE_FILE ]; then
     LAST_DATE=$(cat $DATE_FILE | tail -n 1)
     LAST_DATE_SEC=$(date -j -f "%d/%b/%Y:%T" $LAST_DATE "+%s")
     echo "Last analyse date: $LAST_DATE"
   fi
 
-# Считаем количество новых записей в логе
-echo "Staring counting new records. Please wait..."
+  # Считаем количество новых записей в логе
+  echo "Staring counting new records. Please wait..."
   NEW_RECORDS_COUNT=$(cat $1 |
     cut -d ' ' -f 4 |
     tail -r |
     awk -v dt=$LAST_DATE_SEC '{ cmd="date -j -f \"[%d/%b/%Y:%T\" "$1" \"+%s\""; cmd | getline var; $1=var ; if (var > dt) { print } else { exit 0 } ; close(cmd); } ' |
     wc -l)
 
-# Проверяем, сколько появилось новых записей
+  # Проверяем, сколько появилось новых записей
   if [ $NEW_RECORDS_COUNT -eq 0 ]; then
     echo "No new records in $FILE_NAME since $LAST_DATE"
     echo $CURRENT_DATE >> $DATE_FILE
     exit 0
   fi
 
-echo "New records count in log: $NEW_RECORDS_COUNT"
+  echo "New records count in log: $NEW_RECORDS_COUNT"
 
   echo -e "\nТоп-15 IP-адресов, с которых посещался сайт\n"
   cat $1 |
@@ -122,7 +122,7 @@ echo "New records count in log: $NEW_RECORDS_COUNT"
     head -n 15 |
     awk ' { t = $1; $1 = $2; $2 = t; print; } '
 
-# Записываем дату последнего запуска скрипта
+  # Записываем дату последнего запуска скрипта
   echo $CURRENT_DATE >> $DATE_FILE
 };
 
