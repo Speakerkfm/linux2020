@@ -22,6 +22,8 @@
 ## exit code 20 - файл не существует
 ## exit code 30 - скрипт уже запущен
 
+set -eo pipefail
+
 ## Проверяем, что скрипт не запущен дважды
 if [ $(ps ax | grep $0 | wc -l) -gt 3 ]; then
   echo "Script is already running"
@@ -63,7 +65,7 @@ analyse() {
   echo "Staring counting new records. Please wait..."
   NEW_RECORDS_COUNT=$(cat $1 |
     cut -d ' ' -f 4 |
-    tail -r |
+    (tail -r || true) |
     awk -v dt=$LAST_DATE_SEC '{ cmd="date -j -f \"[%d/%b/%Y:%T\" "$1" \"+%s\""; cmd | getline var; $1=var ; if (var > dt) { print } else { exit 0 } ; close(cmd); } ' |
     wc -l)
 
@@ -78,7 +80,7 @@ analyse() {
 
   echo -e "\nТоп-15 IP-адресов, с которых посещался сайт\n"
   cat $1 |
-    tail -r |
+    (tail -r || true) |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 1 |
     sort |
@@ -89,7 +91,7 @@ analyse() {
 
   echo -e "\nТоп-15 ресурсов сайта, которые запрашивались клиентами\n"
   cat $1 |
-    tail -r |
+    (tail -r || true) |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 7 |
     sort |
@@ -100,7 +102,7 @@ analyse() {
 
   echo -e "\nСписок всех кодов возврата\n"
   cat $1 |
-    tail -r |
+   (tail -r || true) |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 9 |
     sort |
@@ -112,7 +114,7 @@ analyse() {
 
   echo -e "\nСписок кодов возврата 4xx и 5xx (только ошибки)\n"
   cat $1 |
-    tail -r |
+    (tail -r || true) |
     head -n $NEW_RECORDS_COUNT |
     cut -d ' ' -f 9 |
     sort |
