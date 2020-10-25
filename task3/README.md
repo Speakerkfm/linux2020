@@ -62,8 +62,6 @@ stud_centos_2 ssh -i .vagrant/machines/default/virtualbox/private_key -p 2222 us
 
 /home/user3
 
-`[user3@localhost ~]$ `
-
 Б. Создадим группу admin
 
 `$ groupadd admin`
