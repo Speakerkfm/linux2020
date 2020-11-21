@@ -294,14 +294,14 @@ Pass 5: Checking group summary information
 /dev/mai/first: 11/73728 files (0.0% non-contiguous), 24141/281600 blocks
 [root@localhost vagrant]# mount /dev/mai/first /mnt
 [root@localhost vagrant]# df -h
-Filesystem             Size  Used Avail Use% Mounted on
-devtmpfs               226M     0  226M   0% /dev
-tmpfs                  239M     0  239M   0% /dev/shm
-tmpfs                  239M  6.4M  233M   3% /run
-tmpfs                  239M     0  239M   0% /sys/fs/cgroup
-/dev/sda1               10G  5.3G  4.8G  53% /
-tmpfs                   48M     0   48M   0% /run/user/1000
-/dev/mapper/mai-first 1018M   13M  935M   2% /mnt
+Filesystem             Size   Used Avail Use% Mounted on
+devtmpfs               226M      0  226M   0% /dev
+tmpfs                  239M      0  239M   0% /dev/shm
+tmpfs                  239M   6.4M  233M   3% /run
+tmpfs                  239M      0  239M   0% /sys/fs/cgroup
+/dev/sda1               10G   5.3G  4.8G  53% /
+tmpfs                   48M      0   48M   0% /run/user/1000
+/dev/mapper/mai-first 1018M   949M   13M  93% /mnt
 ```
 
 Создаём несколько файлов и делаем снимок:
